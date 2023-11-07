@@ -1,5 +1,6 @@
 package com.example.quartzdemo2.task.job;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Description FirstJob
  */
 
+@DisallowConcurrentExecution   // 实现在相同 Quartz Scheduler 集群中，相同 JobKey 的 JobDetail ，保证在多个 JVM 进程中，有且仅有一个节点在执行
 public class FirstJob extends QuartzJobBean {
     private static final Logger log = LoggerFactory.getLogger(FirstJob.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");

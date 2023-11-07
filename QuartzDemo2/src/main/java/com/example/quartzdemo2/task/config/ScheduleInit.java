@@ -7,6 +7,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author by pepsi-wyl
  * @date 2023-11-06 17:28
@@ -27,12 +30,14 @@ public class ScheduleInit implements ApplicationRunner {
     // SpringBoot-Run 方法
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        // 创建JobDetail
         JobDetail jobDetail = JobBuilder.newJob(SecondJob.class)     // 绑定任务
-                .withIdentity("secondJobDetail", "secondJobDetail-Group")
+                .withIdentity("secondJobDetail", "secondJobDetail-Group") // JobDetail 的唯一标识是 JobKey ，使用 name + group 两个属性
                 .storeDurably()                                      // 没有 Trigger 关联时任务是否被保留 < 创建 JobDetail 时，还没 Trigger 指向它，所以需要设置为 true ，表示保留 >
                 .build();
-        CronTrigger trigger = TriggerBuilder.newTrigger()
-                .forJob(jobDetail)                                  // 绑定任务
+        // 创建Trigger
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .forJob(jobDetail)                                  // 绑定jobDetail任务
                 .withIdentity("secondJobTrigger", "secondJobTrigger-Group")
                 .withSchedule(                                      // 使用CronScheduleBuilder
                         CronScheduleBuilder
@@ -40,6 +45,13 @@ public class ScheduleInit implements ApplicationRunner {
                 )
                 .startNow()                                         // 立即生效
                 .build();
-        scheduler.scheduleJob(jobDetail, trigger);
+        Set<Trigger> set = new HashSet<>();
+        set.add(trigger);
+
+        /**
+         * 配置 JDBC 持久化后需要配置启动时对数据库中的quartz的任务进行覆盖，不然项目启动不起来
+         * boolean replace 表示启动时是否对数据库中的quartz的任务进行覆盖
+         */
+        scheduler.scheduleJob(jobDetail, set, true);
     }
 }
