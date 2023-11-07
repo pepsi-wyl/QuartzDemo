@@ -32,8 +32,8 @@ public class SimpleQuartzTask {
         // JobDetail用来绑定Job，为Job实例提供许多属性：name group jobClass jobDataMap。
         JobDetail printWordsJobDetail = JobBuilder
                 .newJob(PrintWordsJob.class)
-                .withIdentity("printWordsJobDetail-1", "printWordsJobDetail-Group")
-                .usingJobData("jobDetailName", "printWordsJobDetail-1")
+                .withIdentity("printWordsJobDetail", "printWordsJobDetail-Group")
+                .usingJobData("jobDetailName", "printWordsJobDetail")
                 .usingJobData("printWordsJobDetailKey","printWordsJobDetail-测试value")
                 .build();
 
@@ -41,8 +41,8 @@ public class SimpleQuartzTask {
         // Trigger是Quartz的触发器，会去通知Scheduler何时去执行对应Job。
         Trigger printWordsTrigger = TriggerBuilder
                 .newTrigger()
-                .withIdentity("printWordsTrigger-1", "printWordsTrigger-Group")
-                .usingJobData("triggerName", "printWordsTrigger-1")
+                .withIdentity("printWordsTrigger", "printWordsTrigger-Group")
+                .usingJobData("triggerName", "printWordsTrigger")
                 .usingJobData("printWordsTriggerKey","printWordsTriggerKey-测试value")
                 .startNow()   // 立即生效
                 .startAt(new Date(date.getTime() + 5000))
