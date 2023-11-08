@@ -49,7 +49,7 @@ public class DataBaseQuartzTask implements ApplicationRunner {
 //                .endAt(new Date(date.getTime() + 10001))
                 .withSchedule(
                         CronScheduleBuilder
-                                .cronSchedule("0/1 * * * * ?") // CronTrigger 基于日历的作业调度   corn表达式-每隔1s执行一次
+                                .cronSchedule("0/3 * * * * ?") // CronTrigger 基于日历的作业调度   corn表达式-每隔3s执行一次
                 )
                 .build();
 

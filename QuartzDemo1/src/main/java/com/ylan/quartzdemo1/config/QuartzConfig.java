@@ -1,12 +1,17 @@
 package com.ylan.quartzdemo1.config;
 
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
 import org.quartz.ee.servlet.QuartzInitializerListener;
+import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -17,7 +22,10 @@ import java.util.Properties;
  */
 
 @Configuration
-public class SchedulerConfig {
+public class QuartzConfig {
+
+    @Autowired
+    private QuartzJobFactory quartzJobFactory;
 
     /**
      * 读取quartz.properties,将值初始化
@@ -63,7 +71,10 @@ public class SchedulerConfig {
      * @throws IOException io
      */
     @Bean
-    public Scheduler scheduler() throws IOException {
-        return schedulerFactoryBean().getScheduler();
+    public Scheduler scheduler() throws SchedulerException {
+        Scheduler scheduler = new StdSchedulerFactory().getScheduler();
+        // 设置QuartzJobFactory
+        scheduler.setJobFactory(quartzJobFactory);
+        return scheduler;
     }
 }
