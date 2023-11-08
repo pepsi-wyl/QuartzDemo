@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ylan.quartzdemo3.mapper.TaskMapper">
+
+    <!--Base_Result_Map-->
+    <resultMap id="BaseResultMap" type="com.ylan.quartzdemo3.model.entity.TaskEntity">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="job_name" property="jobName" jdbcType="VARCHAR"/>
+        <result column="cron" property="cron" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="CHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--Base_Column_List-->
+    <sql id="Base_Column_List">
+        id, job_name, cron, status, create_time, update_time
+    </sql>
+
+    <!--查询所有任务-->
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from quartz_task
+    </select>
+
+    <!--根据主键-任务ID查询任务-->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from quartz_task
+        where id = #{id, jdbcType=INTEGER}
+    </select>
+
+    <!--根据任务名称查询任务-->
+    <select id="selectByJobName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from quartz_task
+        where job_name = #{jobName, jdbcType=VARCHAR}
+    </select>
+
+    <!---->
+    <select id="selectTaskInfos" resultMap="BaseResultMap" parameterType="com.ylan.quartzdemo3.model.vo.TaskRequestVO">
+        select
+        <include refid="Base_Column_List"/>
+        from quartz_task
+        <where>
+            <if test="searchKey != null and searchKey != ''">
+                job_name like concat('%',concat(trim(#{searchKey}),'%'))
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <!--按照主键-任务ID删除任务-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from quartz_task
+        where id = #{id, jdbcType=INTEGER}
+    </delete>
+
+    <!--插入任务 忽略NULL值-->
+    <insert id="insertSelective" parameterType="com.ylan.quartzdemo3.model.entity.TaskEntity">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+        insert
+        into quartz_task
+
+        <trim prefix = "(" suffix = ")" suffixOverrides=",">
+            <if test="jobName != null">
+                job_name,
+            </if>
+            <if test="cron != null">
+                cron,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+
+        <trim prefix = "values (" suffix = ")" suffixOverrides=",">
+            <if test="jobName != null">
+                #{jobName, jdbcType=VARCHAR},
+            </if>
+            <if test="cron != null">
+                #{cron, jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status, jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime, jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--修改任务 忽略NULL值-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.ylan.quartzdemo3.model.entity.TaskEntity">
+        update quartz_task
+        <set>
+            <if test="jobName != null">
+                job_name = #{jobName, jdbcType=VARCHAR},
+            </if>
+            <if test="cron != null">
+                cron = #{cron, jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status, jdbcType=CHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime, jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime, jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id, jdbcType=INTEGER}
+    </update>
+
+
+    <!--  ==========================================================过期==================================================  -->
+    <!--插入任务 不忽略NULL值-->
+    <insert id="insert" parameterType="com.ylan.quartzdemo3.model.entity.TaskEntity">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert
+        into quartz_task
+            (job_name, cron, status, create_time, update_time)
+        values
+            (#{jobName, jdbcType=VARCHAR}, #{cron, jdbcType=VARCHAR}, #{status, jdbcType=CHAR}, #{createTime, jdbcType=TIMESTAMP}, #{updateTime, jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--修改任务 不忽略NULL值-->
+    <update id="updateByPrimaryKey" parameterType="com.ylan.quartzdemo3.model.entity.TaskEntity">
+        update quartz_task
+        set
+            job_name = #{jobName, jdbcType=VARCHAR},
+            cron = #{cron, jdbcType=VARCHAR},
+            status = #{status, jdbcType=CHAR},
+            create_time = #{createTime, jdbcType=TIMESTAMP},
+            update_time = #{updateTime, jdbcType=TIMESTAMP}
+        where id = #{id, jdbcType=INTEGER}
+    </update>
+
+</mapper>
