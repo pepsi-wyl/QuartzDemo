@@ -40,14 +40,20 @@
         where job_name = #{jobName, jdbcType=VARCHAR}
     </select>
 
-    <!---->
+    <!--多条件查询-->
     <select id="selectTaskInfos" resultMap="BaseResultMap" parameterType="com.ylan.quartzdemo3.model.vo.TaskRequestVO">
         select
         <include refid="Base_Column_List"/>
         from quartz_task
         <where>
-            <if test="searchKey != null and searchKey != ''">
-                job_name like concat('%',concat(trim(#{searchKey}),'%'))
+            <if test="id != null and id != ''">
+                and id = #{id, jdbcType=INTEGER}
+            </if>
+            <if test="jobName != null and jobName != ''">
+                and job_name like concat('%',concat(trim(#{jobName}),'%'))
+            </if>
+            <if test="cron != null and cron != ''">
+                and cron = #{cron, jdbcType=VARCHAR}
             </if>
             <if test="status != null and status != ''">
                 and status = #{status, jdbcType=VARCHAR}

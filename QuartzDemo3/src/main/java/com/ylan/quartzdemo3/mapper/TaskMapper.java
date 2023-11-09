@@ -26,7 +26,7 @@ public interface TaskMapper extends BaseMapper<TaskEntity> {
     // 根据任务名称查询任务
     TaskEntity selectByJobName(String jobName);
 
-    //
+    // 多条件查询
     List<TaskEntity> selectTaskInfos(TaskRequestVO taskRequestVO);
 
     // 按照主键-任务ID删除任务
