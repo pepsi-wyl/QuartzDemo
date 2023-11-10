@@ -1,5 +1,6 @@
 package com.ylan.quartzdemo3.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ylan.quartzdemo3.common.Result;
 import com.ylan.quartzdemo3.model.entity.TaskEntity;
 import com.ylan.quartzdemo3.model.vo.TaskRequestVO;
@@ -13,7 +14,7 @@ import java.util.List;
  * @description 任务Service
  */
 
-public interface TaskService {
+public interface TaskService extends IService<TaskEntity> {
 
     /**
      * 获取所有任务
