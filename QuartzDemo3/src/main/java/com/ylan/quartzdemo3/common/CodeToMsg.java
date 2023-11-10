@@ -26,6 +26,7 @@ public class CodeToMsg {
     public static final int TASK_EXCEPTION = 100002;
     public static final int TASK_CRON_ERROR = 100003;
     public static final int TASK_CRON_DOUBLE = 100004;
+    public static final int TASK_JobNameAndIdNotMatch = 100005;
 
 
     static {
@@ -42,6 +43,7 @@ public class CodeToMsg {
         MSG.put(TASK_EXCEPTION, "设置定时任务失败");
         MSG.put(TASK_CRON_ERROR, "表达式有误");
         MSG.put(TASK_CRON_DOUBLE, "定时任务已经存在");
+        MSG.put(TASK_JobNameAndIdNotMatch, "任务名称和ID不匹配");
     }
 
 
